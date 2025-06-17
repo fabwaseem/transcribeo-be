@@ -18,10 +18,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "postinstall": "npm run prisma:generate && npm run python:setup",
+    "postinstall": "npm run prisma:migrate && npm run prisma:generate && npm run python:setup",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
-    "python:setup": "python -m venv py-get-transcript/venv && py-get-transcript/venv/Scripts/pip install -r py-get-transcript/requirements.txt"
+    "python:setup": "python3 -m venv py-get-transcript/venv && py-get-transcript/venv/bin/pip install -r py-get-transcript/requirements.txt"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
