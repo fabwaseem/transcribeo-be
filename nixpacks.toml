@@ -1,0 +1,20 @@
+[phases.setup]
+nixPkgs = ["python311", "nodejs_20"]
+
+[phases.install]
+cmds = [
+  "npm install",
+  "python3 -m venv py-get-transcript/venv",
+  "py-get-transcript/venv/bin/pip install -r py-get-transcript/requirements.txt"
+]
+
+[phases.build]
+cmds = [
+  "npm run prisma:generate",
+  "npm run prisma:migrate"
+]
+
+[phases.start]
+cmds = [
+  "npm run start:prod"
+]

@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ApiKey {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  name      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  usage     Usage[]
+}
+
+model Usage {
+  id        String   @id @default(uuid())
+  apiKeyId  String
+  apiKey    ApiKey   @relation(fields: [apiKeyId], references: [id])
+  endpoint  String
+  timestamp DateTime @default(now())
+  status    String
+  details   Json?
+}
+
+model Video {
+  id            String       @id
+  title         String
+  author        String
+  lengthSeconds Int
+  thumbnail     String?
+  description   String?
+  channelId     String
+  channelName   String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  transcripts   Transcript[]
+}
+
+model Transcript {
+  id        String   @id @default(uuid())
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id])
+  segments  Json
+  isCustom  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
