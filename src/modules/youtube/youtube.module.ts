@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { YoutubeController } from './youtube.controller';
 import { YoutubeService } from './youtube.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { ApiKeyGuard } from '../auth/guards/api-key.guard';
 
 @Module({
   controllers: [YoutubeController],

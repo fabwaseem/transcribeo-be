@@ -3,6 +3,7 @@ import {
   Post,
   Body,
   UseGuards,
+  Req,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { YoutubeService } from './youtube.service';
 import { TranscriptRequestDto } from './dto/transcript-request.dto';
 import { ApiKeyGuard } from '../auth/guards/api-key.guard';
 import { TranscriptResponse } from './interfaces/transcript.interface';
+import { AuthedRequest } from 'src/types';
 
 @ApiTags('YouTube')
 @Controller('youtube')
@@ -44,9 +46,14 @@ export class YoutubeController {
   })
   async getTranscript(
     @Body() dto: TranscriptRequestDto,
+    @Req() req: AuthedRequest,
   ): Promise<TranscriptResponse> {
     try {
-      const result = await this.youtubeService.processTranscriptRequest(dto);
+      const maxVideos = req.apiKey?.maxVideosPerCall ?? 1;
+      const result = await this.youtubeService.processTranscriptRequest(
+        dto,
+        maxVideos,
+      );
       return {
         success: true,
         data: result,

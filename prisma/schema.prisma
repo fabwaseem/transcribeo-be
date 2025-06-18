@@ -8,13 +8,20 @@ datasource db {
 }
 
 model ApiKey {
-  id        String   @id @default(uuid())
-  key       String   @unique
-  name      String
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  usage     Usage[]
+  id               String   @id @default(uuid())
+  key              String   @unique
+  name             String
+  isActive         Boolean  @default(true)
+  allowedOrigins   String   @default("*") // comma-separated list or *
+  rateLimitWindow  Int      @default(60) // seconds
+  rateLimitCount   Int      @default(30) // max requests per window
+  dailyLimit       Int? // null means unlimited
+  monthlyLimit     Int? // null means unlimited
+  maxCalls         Int? // null means unlimited (for free/trial users)
+  maxVideosPerCall Int?     @default(1) // null means unlimited, default 1
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  usage            Usage[]
 }
 
 model Usage {
@@ -28,25 +35,28 @@ model Usage {
 }
 
 model Video {
-  id            String       @id
-  title         String
-  author        String
-  lengthSeconds Int
-  thumbnail     String?
-  description   String?
-  channelId     String
-  channelName   String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  transcripts   Transcript[]
+  id          String       @id @unique
+  title       String
+  author      String
+  duration    Int
+  thumbnail   String?
+  description String?
+  channelId   String
+  channelName String
+  tags        String[]
+  likes       Int
+  category    String
+  views       Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  transcripts Transcript[]
 }
 
 model Transcript {
   id        String   @id @default(uuid())
-  videoId   String
+  videoId   String   @unique
   video     Video    @relation(fields: [videoId], references: [id])
   segments  Json
-  isCustom  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -1,4 +1,4 @@
-export interface TranscriptSegment {
+export interface ProcessedTranscript {
   id: number;
   text: string;
   start: number;
@@ -6,11 +6,35 @@ export interface TranscriptSegment {
   duration: number;
 }
 
+export interface GeneratedTranscript {
+  text: string;
+  start: number;
+  duration: number;
+}
+[];
+
+export interface VideoInfo {
+  id: string;
+  title: string;
+  author: string;
+  duration: number;
+  thumbnail: string;
+  description: string;
+  channel: {
+    id: string;
+    name: string;
+  };
+  tags: string[];
+  likes: number;
+  category: string;
+  views: number;
+}
+
 export interface ProcessedResult {
-  info: any;
+  info: VideoInfo;
   transcript: {
-    original: any[];
-    processed: TranscriptSegment[];
+    original: GeneratedTranscript[];
+    custom?: ProcessedTranscript[];
   };
 }
 

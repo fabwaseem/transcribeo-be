@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, IsBoolean } from 'class-validator';
+import { IsOptional, IsString, IsBoolean, IsNumber } from 'class-validator';
 
 export class TranscriptRequestDto {
   @ApiProperty({ description: 'YouTube video ID', example: 'dQw4w9WgXcQ' })
@@ -27,4 +27,12 @@ export class TranscriptRequestDto {
   @IsBoolean()
   @IsOptional()
   custom?: boolean;
+
+  @ApiProperty({
+    description: 'Min length of a segment in seconds',
+    example: 10,
+  })
+  @IsNumber()
+  @IsOptional()
+  minLength?: number;
 }
