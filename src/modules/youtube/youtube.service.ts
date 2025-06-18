@@ -173,17 +173,6 @@ export class YoutubeService {
         end: segment.start + segment.duration,
       })) as ProcessedTranscript[];
 
-      await this.prisma.transcript.upsert({
-        where: { videoId: videoId },
-        update: {
-          videoId: videoId,
-          segments: processedTranscript as any,
-        },
-        create: {
-          videoId: videoId,
-          segments: processedTranscript as any,
-        },
-      });
       return processedTranscript;
     } catch (error) {
       this.logger.error(`Error fetching transcript: ${error.message}`);
@@ -204,7 +193,17 @@ export class YoutubeService {
             this.getTranscript(id),
           ]);
           if (!videoInfo || !transcript || transcript.length === 0) return null;
-
+          await this.prisma.transcript.upsert({
+            where: { videoId: id },
+            update: {
+              videoId: id,
+              segments: transcript as any,
+            },
+            create: {
+              videoId: id,
+              segments: transcript as any,
+            },
+          });
           if (custom && transcript.length > 0) {
             const processedTranscript = this.processTranscript(
               transcript,
