@@ -143,13 +143,13 @@ export class YoutubeService {
     }
   }
 
-  async getTranscript(videoId: string): Promise<GeneratedTranscript[] | null> {
+  async getTranscript(videoId: string): Promise<ProcessedTranscript[] | null> {
     try {
       const existingTranscript = await this.prisma.transcript.findUnique({
         where: { videoId: videoId },
       });
       if (existingTranscript && existingTranscript.segments) {
-        return existingTranscript.segments as unknown as GeneratedTranscript[];
+        return existingTranscript.segments as unknown as ProcessedTranscript[];
       }
 
       // Detect platform and use the correct Python path
@@ -164,18 +164,27 @@ export class YoutubeService {
       );
       const result = JSON.parse(stdout);
       if (result.error) throw new Error(result.error);
+
+      const transcript = result.transcript as GeneratedTranscript[];
+
+      const processedTranscript = transcript.map((segment, index) => ({
+        ...segment,
+        id: index + 1,
+        end: segment.start + segment.duration,
+      })) as ProcessedTranscript[];
+
       await this.prisma.transcript.upsert({
         where: { videoId: videoId },
         update: {
           videoId: videoId,
-          segments: result.transcript as any,
+          segments: processedTranscript as any,
         },
         create: {
           videoId: videoId,
-          segments: result.transcript as any,
+          segments: processedTranscript as any,
         },
       });
-      return result.transcript as GeneratedTranscript[];
+      return processedTranscript;
     } catch (error) {
       this.logger.error(`Error fetching transcript: ${error.message}`);
       return null;

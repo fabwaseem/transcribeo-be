@@ -11,7 +11,6 @@ export interface GeneratedTranscript {
   start: number;
   duration: number;
 }
-[];
 
 export interface VideoInfo {
   id: string;
@@ -33,7 +32,7 @@ export interface VideoInfo {
 export interface ProcessedResult {
   info: VideoInfo;
   transcript: {
-    original: GeneratedTranscript[];
+    original: ProcessedTranscript[];
     custom?: ProcessedTranscript[];
   };
 }

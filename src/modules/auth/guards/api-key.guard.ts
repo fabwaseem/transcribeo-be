@@ -147,9 +147,9 @@ export class ApiKeyGuard implements CanActivate {
   }
 
   private extractApiKeyFromHeader(request: any): string | undefined {
-    const authHeader = request.headers.authorization;
-    if (!authHeader) return undefined;
-    return authHeader; // Accepts the raw API key
+    const apiKey = request.headers['x-api-key'];
+    if (!apiKey) return undefined;
+    return apiKey;
   }
 
   private async logApiUsage(apiKeyId: string, request: any) {
